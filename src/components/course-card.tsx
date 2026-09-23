@@ -1,19 +1,36 @@
+import { Trash2 } from "lucide-react";
 import type { Course, Student } from "@/lib/types";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
 type CourseCardProps = {
   course: Course;
   student: Student;
+  isEnrolled: boolean;
   enrolledAt?: string;
+  onCancel?: () => void;
 };
 
-export function CourseCard({ course, student, enrolledAt }: CourseCardProps) {
+const dateFormatter = new Intl.DateTimeFormat("th-TH", {
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+export function CourseCard({
+  course,
+  student,
+  isEnrolled,
+  enrolledAt,
+  onCancel,
+}: CourseCardProps) {
   return (
     <Card>
       <CardHeader>
@@ -21,16 +38,35 @@ export function CourseCard({ course, student, enrolledAt }: CourseCardProps) {
         <CardDescription>
           รหัสวิชา: {course.courseId} · ผู้สอน: {course.instructors.join(", ")}
         </CardDescription>
+        <CardAction>
+          <Badge variant={isEnrolled ? "enrolled" : "open"}>
+            {isEnrolled ? "ลงทะเบียนแล้ว" : "เปิดรับ"}
+          </Badge>
+        </CardAction>
       </CardHeader>
-      <CardContent className="flex items-end justify-between">
-        <div className="text-xs text-muted-foreground">
-          <p>
-            ชื่อ นศ.: {student.firstName} {student.lastName}
-          </p>
-          <p>โปรแกรม: {student.program}</p>
-          <p>ลงทะเบียนเมื่อ: {enrolledAt}</p>
-        </div>
-      </CardContent>
+
+      {isEnrolled && (
+        <CardContent className="flex items-end justify-between">
+          <div className="text-xs text-muted-foreground">
+            <p>
+              ชื่อ นศ.: {student.firstName} {student.lastName}
+            </p>
+            <p>โปรแกรม: {student.program}</p>
+            <p>
+              ลงทะเบียนเมื่อ:{" "}
+              {enrolledAt ? dateFormatter.format(new Date(enrolledAt)) : "-"}
+            </p>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onCancel}
+            aria-label="ยกเลิกการลงทะเบียน"
+          >
+            <Trash2 className="text-destructive" />
+          </Button>
+        </CardContent>
+      )}
     </Card>
   );
 }
