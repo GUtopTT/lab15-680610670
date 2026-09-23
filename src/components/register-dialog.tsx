@@ -72,7 +72,7 @@ export function RegisterDialog({
 
           <div className="space-y-2">
             <Label htmlFor="courseId">วิชา</Label>
-            <Select value={courseId} onValueChange={setCourseId}>
+            <Select value={courseId} onValueChange={(value) => setCourseId(value ?? "")}>
               <SelectTrigger id="courseId">
                 <SelectValue placeholder="เลือกวิชา" />
               </SelectTrigger>
